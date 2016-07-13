@@ -35,14 +35,15 @@ def make_chains(text_string):
         values = [words[i + 2]]
 
         if (words[i], words[i + 1]) in chains_dict:
-            values.append(words[i + 2])
-            chains_dict[(words[i], words[i + 1])] = values
+            new_values = chains_dict[(words[i], words[i + 1])]
+            new_values.append(words[i + 2])
+            chains_dict[(words[i], words[i + 1])] = new_values
         else:
             chains_dict[(words[i], words[i + 1])] = values
 
     return chains_dict
 
-#print make_chains(open_and_read_file('green-eggs.txt'))
+print make_chains(open_and_read_file('green-eggs.txt'))
 
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
