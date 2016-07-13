@@ -1,5 +1,5 @@
 from random import choice
-
+import sys
 
 def open_and_read_file(file_path):
     """Takes file path as string; returns text as string.
@@ -31,38 +31,46 @@ def make_chains(text_string):
     # this will give us a list of individual words
     words = text_string.split()
 
-    for i in range(len(words) - 2):
-        values = [words[i + 2]]
+    n_gram = int(raw_input("How long is the gram? "))
 
-        if (words[i], words[i + 1]) in chains_dict:
-            new_values = chains_dict[(words[i], words[i + 1])]
-            new_values.append(words[i + 2])
-            chains_dict[(words[i], words[i + 1])] = new_values
+
+    for i in range(len(words) - n_gram):
+        values = [words[i + n_gram]]
+        initial_tuple_key = words[i:(n_gram + i)]
+        tuple_key = tuple(initial_tuple_key)
+        if tuple_key in chains_dict:
+            new_values = chains_dict[tuple_key]
+            new_values.append(words[i + n_gram])
+            chains_dict[tuple_key] = new_values
         else:
-            chains_dict[(words[i], words[i + 1])] = values
+            chains_dict[tuple_key] = values
 
+    print chains_dict
     return chains_dict
 
-print make_chains(open_and_read_file('green-eggs.txt'))
+#print make_chains(open_and_read_file('green-eggs.txt'))
 
-def make_text(chains):
-    """Takes dictionary of markov chains; returns random text."""
+# def make_text(chains):
+#     """Takes dictionary of markov chains; returns random text."""
 
-    text = []
+#     text = []
 
-    random_key = choice(chains.keys())
+#     random_key = choice(chains.keys())
+#     n = len(random_key)
 
-    text.extend([random_key[0],random_key[1]])
+#     for i in range(len(random_key)):
+#         text.append(random_key[i])
 
-    while random_key in chains:
-        some_word = choice(chains.get(random_key))
-        text.append(some_word)
-        random_key = (text[-2], text[-1])
+#     while random_key in chains:
+#         some_word = choice(chains.get(random_key))
+#         text.append(some_word)
+#         random_key = tuple(text[-n::])
     
-    return " ".join(text)
+#     return " ".join(text)
         
         
-input_path = "green-eggs.txt"
+input_path = sys.argv[1] # in terminal, we type in "python markov.py textfile.txt."
+                            # [0] is markov.py    [1] is textfile.txt
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
@@ -71,6 +79,6 @@ input_text = open_and_read_file(input_path)
 chains = make_chains(input_text)
 
 # Produce random text
-random_text = make_text(chains)
+# random_text = make_text(chains)
 
-print random_text
+# print random_text
